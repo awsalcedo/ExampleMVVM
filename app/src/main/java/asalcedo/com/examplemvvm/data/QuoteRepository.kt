@@ -9,6 +9,8 @@ import asalcedo.com.examplemvvm.data.network.QuoteService
  * From: asalcedo.com.examplemvvm.data
  * Created by Alex Salcedo Silva on 15/2/22 at 21:46
  * All rights reserve 2022.
+ * Clase encargada de gestionar si accedemos a la parte de network o de database o a cualquier
+ * fuente de datos
  ***/
 class QuoteRepository {
     private val api = QuoteService()
