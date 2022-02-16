@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.create
+import javax.inject.Inject
 
 /****
  * Project: ExampleMVVM
