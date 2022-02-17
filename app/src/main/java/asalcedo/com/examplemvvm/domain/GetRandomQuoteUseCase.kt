@@ -11,12 +11,10 @@ import javax.inject.Inject
  * Created by Alex Salcedo Silva on 15/2/22 at 22:49
  * All rights reserve 2022.
  ***/
-class GetRandomQuoteUseCase @Inject constructor() {
-
-    private val repository = QuoteRepository()
+class GetRandomQuoteUseCase @Inject constructor(private val quoteProvider: QuoteProvider) {
 
     operator fun invoke(): QuoteModel? {
-        val quotes = QuoteProvider.quotes
+        val quotes = quoteProvider.quotes
         if (!quotes.isNullOrEmpty()) {
             val randomNumber = (quotes.indices).random()
             return quotes[randomNumber]

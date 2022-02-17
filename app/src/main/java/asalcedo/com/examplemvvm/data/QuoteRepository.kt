@@ -13,10 +13,13 @@ import javax.inject.Inject
  * Clase encargada de gestionar si accedemos a la parte de network o de database o a cualquier
  * fuente de datos y a esta es a la que accedería desde la capa de domain
  ***/
-class QuoteRepository @Inject constructor(private val api: QuoteService) {
+class QuoteRepository @Inject constructor(
+    private val api: QuoteService,
+    private val quoteProvider: QuoteProvider
+) {
     suspend fun getAllQuotes(): List<QuoteModel> {
         val response = api.getQuotes()
-        QuoteProvider.quotes = response
+        quoteProvider.quotes = response
         return response
     }
 }

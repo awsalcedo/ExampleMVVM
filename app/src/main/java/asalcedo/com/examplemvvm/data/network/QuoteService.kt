@@ -14,12 +14,12 @@ import javax.inject.Inject
  * Created by Alex Salcedo Silva on 15/2/22 at 21:39
  * All rights reserve 2022.
  ***/
-class QuoteService {
-    private val retrofit = RetrofitHelper.getRetrofit()
+class QuoteService @Inject constructor(private val api: QuoteApiClient) {
+
     suspend fun getQuotes(): List<QuoteModel> {
         return withContext(Dispatchers.IO) {
             val response: Response<List<QuoteModel>> =
-                retrofit.create(QuoteApiClient::class.java).getAllQuotes()
+                api.getAllQuotes()
             response.body() ?: emptyList()
         }
 
