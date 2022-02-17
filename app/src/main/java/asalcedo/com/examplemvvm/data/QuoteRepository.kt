@@ -1,8 +1,9 @@
 package asalcedo.com.examplemvvm.data
 
-import asalcedo.com.examplemvvm.data.model.QuoteModel
-import asalcedo.com.examplemvvm.data.model.QuoteProvider
+import asalcedo.com.examplemvvm.data.database.entities.dao.QuoteDao
 import asalcedo.com.examplemvvm.data.network.QuoteService
+import asalcedo.com.examplemvvm.domain.model.Quote
+import asalcedo.com.examplemvvm.domain.model.toDomain
 import javax.inject.Inject
 
 /****
@@ -12,14 +13,20 @@ import javax.inject.Inject
  * All rights reserve 2022.
  * Clase encargada de gestionar si accedemos a la parte de network o de database o a cualquier
  * fuente de datos y a esta es a la que accedería desde la capa de domain
+ * El use case decide de donde va a tomar la data
  ***/
 class QuoteRepository @Inject constructor(
     private val api: QuoteService,
-    private val quoteProvider: QuoteProvider
+    private val quoteDao: QuoteDao
 ) {
-    suspend fun getAllQuotes(): List<QuoteModel> {
+    //Recupera las citas de internet y las devuelve al dominio
+    suspend fun getAllQuotesFromApi(): List<Quote> {
         val response = api.getQuotes()
-        quoteProvider.quotes = response
-        return response
+        return response.map { it.toDomain() } // hace uso del mapper
+    }
+
+    suspend fun getQuotesFromDatabase(): List<Quote> {
+        val response = quoteDao.getAllQuotes()
+        return response.map { it.toDomain() }
     }
 }
