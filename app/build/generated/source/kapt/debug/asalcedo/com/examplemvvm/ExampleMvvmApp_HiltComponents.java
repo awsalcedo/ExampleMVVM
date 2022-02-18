@@ -1,5 +1,7 @@
 package asalcedo.com.examplemvvm;
 
+import asalcedo.com.examplemvvm.di.NetworkModule;
+import asalcedo.com.examplemvvm.di.RoomModule;
 import asalcedo.com.examplemvvm.ui.view.MainActivity_GeneratedInjector;
 import asalcedo.com.examplemvvm.ui.viewmodel.QuoteViewModel_HiltModules;
 import dagger.Binds;
@@ -116,7 +118,9 @@ public final class ExampleMvvmApp_HiltComponents {
       modules = {
           ApplicationContextModule.class,
           ActivityRetainedCBuilderModule.class,
-          ServiceCBuilderModule.class
+          ServiceCBuilderModule.class,
+          NetworkModule.class,
+          RoomModule.class
       }
   )
   @Singleton

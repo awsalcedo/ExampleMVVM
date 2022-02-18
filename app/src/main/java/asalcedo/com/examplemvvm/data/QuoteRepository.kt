@@ -1,8 +1,9 @@
 package asalcedo.com.examplemvvm.data
 
+import asalcedo.com.examplemvvm.data.database.entities.QuoteEntity
 import asalcedo.com.examplemvvm.data.database.entities.dao.QuoteDao
 import asalcedo.com.examplemvvm.data.network.QuoteService
-import asalcedo.com.examplemvvm.domain.model.Quote
+import asalcedo.com.examplemvvm.domain.model.QuoteItem
 import asalcedo.com.examplemvvm.domain.model.toDomain
 import javax.inject.Inject
 
@@ -20,13 +21,21 @@ class QuoteRepository @Inject constructor(
     private val quoteDao: QuoteDao
 ) {
     //Recupera las citas de internet y las devuelve al dominio
-    suspend fun getAllQuotesFromApi(): List<Quote> {
+    suspend fun getAllQuotesFromApi(): List<QuoteItem> {
         val response = api.getQuotes()
         return response.map { it.toDomain() } // hace uso del mapper
     }
 
-    suspend fun getQuotesFromDatabase(): List<Quote> {
+    suspend fun getQuotesFromDatabase(): List<QuoteItem> {
         val response = quoteDao.getAllQuotes()
         return response.map { it.toDomain() }
+    }
+
+    suspend fun insertQuotes(quotes: List<QuoteEntity>) {
+        quoteDao.insertAll(quotes)
+    }
+
+    suspend fun clearQuotes() {
+        quoteDao.deleteAllQuotes()
     }
 }

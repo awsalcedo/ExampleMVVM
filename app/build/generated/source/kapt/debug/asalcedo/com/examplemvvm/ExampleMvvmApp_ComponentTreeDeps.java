@@ -18,6 +18,8 @@ import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_andro
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_internal_builders_ViewWithFragmentComponentBuilder;
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_components_SingletonComponent;
 import hilt_aggregated_deps._asalcedo_com_examplemvvm_ExampleMvvmApp_GeneratedInjector;
+import hilt_aggregated_deps._asalcedo_com_examplemvvm_di_NetworkModule;
+import hilt_aggregated_deps._asalcedo_com_examplemvvm_di_RoomModule;
 import hilt_aggregated_deps._asalcedo_com_examplemvvm_ui_view_MainActivity_GeneratedInjector;
 import hilt_aggregated_deps._asalcedo_com_examplemvvm_ui_viewmodel_QuoteViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._asalcedo_com_examplemvvm_ui_viewmodel_QuoteViewModel_HiltModules_KeyModule;
@@ -74,6 +76,8 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _dagger_hilt_android_internal_managers_ViewComponentManager_ViewWithFragmentComponentBuilderEntryPoint.class,
         _dagger_hilt_android_internal_modules_ApplicationContextModule.class,
         _dagger_hilt_android_internal_modules_HiltWrapper_ActivityModule.class,
+        _asalcedo_com_examplemvvm_di_NetworkModule.class,
+        _asalcedo_com_examplemvvm_di_RoomModule.class,
         _asalcedo_com_examplemvvm_ui_view_MainActivity_GeneratedInjector.class,
         _asalcedo_com_examplemvvm_ExampleMvvmApp_GeneratedInjector.class,
         _asalcedo_com_examplemvvm_ui_viewmodel_QuoteViewModel_HiltModules_BindsModule.class,

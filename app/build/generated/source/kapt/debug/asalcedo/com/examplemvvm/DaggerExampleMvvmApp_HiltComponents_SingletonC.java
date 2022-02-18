@@ -7,6 +7,17 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import asalcedo.com.examplemvvm.data.QuoteRepository;
+import asalcedo.com.examplemvvm.data.database.entities.QuoteDatabase;
+import asalcedo.com.examplemvvm.data.database.entities.dao.QuoteDao;
+import asalcedo.com.examplemvvm.data.network.QuoteApiClient;
+import asalcedo.com.examplemvvm.data.network.QuoteService;
+import asalcedo.com.examplemvvm.di.NetworkModule;
+import asalcedo.com.examplemvvm.di.NetworkModule_ProvideQuoteApiClientFactory;
+import asalcedo.com.examplemvvm.di.NetworkModule_ProvideRetrofitFactory;
+import asalcedo.com.examplemvvm.di.RoomModule;
+import asalcedo.com.examplemvvm.di.RoomModule_ProvideQuoteDaoFactory;
+import asalcedo.com.examplemvvm.di.RoomModule_ProvideRoomFactory;
 import asalcedo.com.examplemvvm.domain.GetQuotesUseCase;
 import asalcedo.com.examplemvvm.domain.GetRandomQuoteUseCase;
 import asalcedo.com.examplemvvm.ui.view.MainActivity;
@@ -25,6 +36,7 @@ import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories_Internal
 import dagger.hilt.android.internal.managers.ActivityRetainedComponentManager_Lifecycle_Factory;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
 import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideApplicationFactory;
+import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
@@ -32,6 +44,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Provider;
+import retrofit2.Retrofit;
 
 @DaggerGenerated
 @SuppressWarnings({
@@ -43,14 +56,43 @@ public final class DaggerExampleMvvmApp_HiltComponents_SingletonC extends Exampl
 
   private final DaggerExampleMvvmApp_HiltComponents_SingletonC singletonC = this;
 
+  private Provider<Retrofit> provideRetrofitProvider;
+
+  private Provider<QuoteApiClient> provideQuoteApiClientProvider;
+
+  private Provider<QuoteDatabase> provideRoomProvider;
+
+  private Provider<QuoteDao> provideQuoteDaoProvider;
+
   private DaggerExampleMvvmApp_HiltComponents_SingletonC(
       ApplicationContextModule applicationContextModuleParam) {
     this.applicationContextModule = applicationContextModuleParam;
+    initialize(applicationContextModuleParam);
 
   }
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  private QuoteApiClient quoteApiClient() {
+    return NetworkModule_ProvideQuoteApiClientFactory.provideQuoteApiClient(provideRetrofitProvider.get());
+  }
+
+  private QuoteDatabase quoteDatabase() {
+    return RoomModule_ProvideRoomFactory.provideRoom(ApplicationContextModule_ProvideContextFactory.provideContext(applicationContextModule));
+  }
+
+  private QuoteDao quoteDao() {
+    return RoomModule_ProvideQuoteDaoFactory.provideQuoteDao(provideRoomProvider.get());
+  }
+
+  @SuppressWarnings("unchecked")
+  private void initialize(final ApplicationContextModule applicationContextModuleParam) {
+    this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonC, 1));
+    this.provideQuoteApiClientProvider = DoubleCheck.provider(new SwitchingProvider<QuoteApiClient>(singletonC, 0));
+    this.provideRoomProvider = DoubleCheck.provider(new SwitchingProvider<QuoteDatabase>(singletonC, 3));
+    this.provideQuoteDaoProvider = DoubleCheck.provider(new SwitchingProvider<QuoteDao>(singletonC, 2));
   }
 
   @Override
@@ -75,6 +117,24 @@ public final class DaggerExampleMvvmApp_HiltComponents_SingletonC extends Exampl
 
     public Builder applicationContextModule(ApplicationContextModule applicationContextModule) {
       this.applicationContextModule = Preconditions.checkNotNull(applicationContextModule);
+      return this;
+    }
+
+    /**
+     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
+     */
+    @Deprecated
+    public Builder networkModule(NetworkModule networkModule) {
+      Preconditions.checkNotNull(networkModule);
+      return this;
+    }
+
+    /**
+     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
+     */
+    @Deprecated
+    public Builder roomModule(RoomModule roomModule) {
+      Preconditions.checkNotNull(roomModule);
       return this;
     }
 
@@ -397,8 +457,24 @@ public final class DaggerExampleMvvmApp_HiltComponents_SingletonC extends Exampl
 
     }
 
+    private QuoteService quoteService() {
+      return new QuoteService(singletonC.provideQuoteApiClientProvider.get());
+    }
+
+    private QuoteRepository quoteRepository() {
+      return new QuoteRepository(quoteService(), singletonC.provideQuoteDaoProvider.get());
+    }
+
+    private GetQuotesUseCase getQuotesUseCase() {
+      return new GetQuotesUseCase(quoteRepository());
+    }
+
+    private GetRandomQuoteUseCase getRandomQuoteUseCase() {
+      return new GetRandomQuoteUseCase(quoteRepository());
+    }
+
     private QuoteViewModel quoteViewModel() {
-      return new QuoteViewModel(new GetQuotesUseCase(), new GetRandomQuoteUseCase());
+      return new QuoteViewModel(getQuotesUseCase(), getRandomQuoteUseCase());
     }
 
     @SuppressWarnings("unchecked")
@@ -508,6 +584,37 @@ public final class DaggerExampleMvvmApp_HiltComponents_SingletonC extends Exampl
       this.singletonC = singletonC;
 
 
+    }
+  }
+
+  private static final class SwitchingProvider<T> implements Provider<T> {
+    private final DaggerExampleMvvmApp_HiltComponents_SingletonC singletonC;
+
+    private final int id;
+
+    SwitchingProvider(DaggerExampleMvvmApp_HiltComponents_SingletonC singletonC, int id) {
+      this.singletonC = singletonC;
+      this.id = id;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T get() {
+      switch (id) {
+        case 0: // asalcedo.com.examplemvvm.data.network.QuoteApiClient 
+        return (T) singletonC.quoteApiClient();
+
+        case 1: // retrofit2.Retrofit 
+        return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit();
+
+        case 2: // asalcedo.com.examplemvvm.data.database.entities.dao.QuoteDao 
+        return (T) singletonC.quoteDao();
+
+        case 3: // asalcedo.com.examplemvvm.data.database.entities.QuoteDatabase 
+        return (T) singletonC.quoteDatabase();
+
+        default: throw new AssertionError(id);
+      }
     }
   }
 }

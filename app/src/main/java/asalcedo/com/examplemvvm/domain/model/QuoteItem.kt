@@ -6,9 +6,9 @@ import asalcedo.com.examplemvvm.data.model.QuoteModel
 /*
 Modelo de datos con el cual la capa de dominio y ui va a trabajar
  */
-data class Quote(val quote: String, val author: String)
+data class QuoteItem(val quote: String, val author: String)
 
-fun QuoteModel.toDomain() = Quote(quote, author)
-fun QuoteEntity.toDomain() = Quote(quote, author)
+fun QuoteModel.toDomain() = QuoteItem(quote, author)
+fun QuoteEntity.toDomain() = QuoteItem(quote, author)
 
 
